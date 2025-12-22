@@ -65,7 +65,7 @@ ${formData.additionalNotes ? `Notes: ${formData.additionalNotes}` : ''}
     `.trim();
 
     // Your WhatsApp number (replace with your actual number)
-    const whatsappNumber = '2348012345678'; // Format: country code + number (no + or spaces)
+    const whatsappNumber = '2348099925255'; // Format: country code + number (no + or spaces)
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     
     // Open WhatsApp
