@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { db, auth } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AdminPage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [inStock, setInStock] = useState(true);
   const [loading, setLoading] = useState(false);
 
   // Replace these with your Cloudinary credentials
@@ -49,30 +50,34 @@ const AdminPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!image) {
-      alert('Please upload an image.');
+    if (images.length === 0) {
+      alert('Please upload at least one image.');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Upload image to Cloudinary
-      const imageUrl = await uploadToCloudinary(image);
+      // Upload images to Cloudinary
+      const imageUrls = await Promise.all(
+        images.map(image => uploadToCloudinary(image))
+      );
 
-      // Save product to Firestore with Cloudinary URL
+      // Save product to Firestore with Cloudinary URLs
       await addDoc(collection(db, 'products'), {
         name,
         description,
         price: Number(price),
-        imageUrl,
+        imageUrls,
+        inStock,
         createdAt: new Date().toISOString(),
       });
 
       setName('');
       setDescription('');
       setPrice('');
-      setImage(null);
+      setImages([]);
+      setInStock(true);
       const fileInput = document.getElementById('image') as HTMLInputElement;
       if (fileInput) {
         fileInput.value = '';
@@ -90,7 +95,8 @@ const AdminPage = () => {
     setName('');
     setDescription('');
     setPrice('');
-    setImage(null);
+    setImages([]);
+    setInStock(true);
     const fileInput = document.getElementById('image') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -107,12 +113,20 @@ const AdminPage = () => {
               <h1 className="text-2xl font-semibold text-gray-900">Admin Panel</h1>
               <p className="text-sm text-gray-500 mt-1">Manage your product inventory</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/admin/products"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Manage Products
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -182,6 +196,19 @@ const AdminPage = () => {
               <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1.5">
                 Product Image
               </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="inStock" className="block text-sm font-medium text-gray-700">
+                  Availability
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setInStock(!inStock)}
+                  className={`${inStock ? 'bg-blue-600' : 'bg-gray-200'} relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+                >
+                  <span className={`${inStock ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}/>
+                </button>
+              </div>
+
               <div className="mt-1">
                 <label
                   htmlFor="image"
@@ -202,8 +229,8 @@ const AdminPage = () => {
                       />
                     </svg>
                     <div className="mt-2 text-sm text-gray-600">
-                      {image ? (
-                        <span className="font-medium text-blue-600">{image.name}</span>
+                      {images.length > 0 ? (
+                        <span className="font-medium text-blue-600">{images.length} file(s) selected</span>
                       ) : (
                         <>
                           <span className="font-medium text-blue-600">Click to upload</span>
@@ -219,8 +246,9 @@ const AdminPage = () => {
                   id="image"
                   required
                   accept="image/*"
+                  multiple
                   disabled={loading}
-                  onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
+                  onChange={(e) => setImages(e.target.files ? Array.from(e.target.files) : [])}
                   className="hidden"
                 />
               </div>

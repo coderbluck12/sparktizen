@@ -11,6 +11,7 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   
@@ -29,7 +30,14 @@ const ProductDetailPage = () => {
           const docRef = doc(db, 'products', id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
-            setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
+            const productData = { id: docSnap.id, ...docSnap.data() } as Product;
+            setProduct(productData);
+            // Check if imageUrls exists and has items, otherwise use imageUrl
+            if (productData.imageUrls && productData.imageUrls.length > 0) {
+              setSelectedImage(productData.imageUrls[0]);
+            } else if (productData.imageUrl) {
+              setSelectedImage(productData.imageUrl);
+            }
           } else {
             console.log('No such document!');
           }
@@ -74,9 +82,18 @@ const ProductDetailPage = () => {
     }
   };
 
+  // Helper function to get product image
+  const getProductImage = (product: Product) => {
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      return product.imageUrls[0];
+    }
+    return product.imageUrl || '';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="bg-gray-200 rounded-lg animate-pulse" style={{ paddingBottom: '100%' }}></div>
@@ -94,13 +111,16 @@ const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Product not found</h2>
-          <p className="text-gray-600 mb-4">The product you're looking for doesn't exist.</p>
-          <Link to="/" className="text-blue-600 hover:underline">
-            ← Back to store
-          </Link>
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 64px)' }}>
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Product not found</h2>
+            <p className="text-gray-600 mb-4">The product you're looking for doesn't exist.</p>
+            <Link to="/" className="text-blue-600 hover:underline">
+              ← Back to store
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -113,7 +133,7 @@ const ProductDetailPage = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link to="/" className="hover:text-gray-900">Store</Link>
+            <Link to="/store" className="hover:text-gray-900">Store</Link>
             <span>/</span>
             <span className="text-gray-900">{product.name}</span>
           </nav>
@@ -124,14 +144,35 @@ const ProductDetailPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Image */}
-          <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
-            <div className="relative" style={{ paddingBottom: '100%' }}>
-              <img 
-                src={product.imageUrl} 
-                alt={product.name} 
-                className="absolute inset-0 w-full h-full object-cover object-center"
-              />
+          <div>
+            <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+              <div className="relative" style={{ paddingBottom: '100%' }}>
+                <img 
+                  src={selectedImage || getProductImage(product)} 
+                  alt={product.name} 
+                  className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300"
+                />
+              </div>
             </div>
+            {product.imageUrls && product.imageUrls.length > 1 && (
+              <div className="grid grid-cols-5 gap-2 mt-2">
+                {product.imageUrls.map((url, index) => (
+                  <div
+                    key={index}
+                    className={`rounded-lg overflow-hidden border-2 ${selectedImage === url ? 'border-blue-500' : 'border-transparent'} cursor-pointer hover:border-gray-300 transition-colors`}
+                    onClick={() => setSelectedImage(url)}
+                  >
+                    <div className="relative" style={{ paddingBottom: '100%' }}>
+                      <img 
+                        src={url} 
+                        alt={`${product.name} thumbnail ${index + 1}`} 
+                        className="absolute inset-0 w-full h-full object-cover" 
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -153,14 +194,16 @@ const ProductDetailPage = () => {
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  disabled={!product.inStock}
+                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-lg">−</span>
                 </button>
                 <span className="w-12 text-center font-medium text-gray-900">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  disabled={!product.inStock}
+                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-lg">+</span>
                 </button>
@@ -170,10 +213,13 @@ const ProductDetailPage = () => {
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
+              disabled={!product.inStock}
               className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
                 addedToCart
                   ? 'bg-green-600 text-white'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  : product.inStock
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-400 text-white cursor-not-allowed'
               }`}
             >
               {addedToCart ? (
@@ -183,8 +229,10 @@ const ProductDetailPage = () => {
                   </svg>
                   Added to Cart
                 </span>
-              ) : (
+              ) : product.inStock ? (
                 'Add to Cart'
+              ) : (
+                'Out of Stock'
               )}
             </button>
 
@@ -198,7 +246,9 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-gray-600">Availability</dt>
-                  <dd className="text-green-600 font-medium">In Stock</dd>
+                  <dd className={`${product.inStock ? 'text-green-600' : 'text-red-600'} font-medium`}>
+                    {product.inStock ? 'In Stock' : 'Out of Stock'}
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -210,7 +260,7 @@ const ProductDetailPage = () => {
           <div className="mt-16">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900">You May Also Like</h2>
-              <Link to="/" className="text-sm text-blue-600 hover:underline">
+              <Link to="/store" className="text-sm text-blue-600 hover:underline">
                 View all →
               </Link>
             </div>
@@ -225,7 +275,7 @@ const ProductDetailPage = () => {
                   <div className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
                     <div className="relative bg-gray-50 overflow-hidden" style={{ paddingBottom: '125%' }}>
                       <img 
-                        src={relatedProduct.imageUrl} 
+                        src={getProductImage(relatedProduct)} 
                         alt={relatedProduct.name} 
                         className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                       />

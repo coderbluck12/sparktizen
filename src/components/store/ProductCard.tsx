@@ -7,13 +7,21 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // Helper function to safely get product image
+  const getProductImage = (): string => {
+    if (product.imageUrls && product.imageUrls.length > 0) {
+      return product.imageUrls[0];
+    }
+    return product.imageUrl || 'https://via.placeholder.com/400?text=No+Image';
+  };
+
   return (
     <div className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       {/* Image Container - Fixed aspect ratio */}
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative bg-gray-50 overflow-hidden group" style={{ paddingBottom: '125%' }}>
           <img 
-            src={product.imageUrl} 
+            src={getProductImage()} 
             alt={product.name} 
             className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
           />
