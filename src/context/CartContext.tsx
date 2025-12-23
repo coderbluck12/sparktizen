@@ -8,7 +8,8 @@ export interface CartItem extends Product {
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
+  removeFromCart: (productId: string | number) => void;
+  clearCart: () => void;
   updateQuantity: (productId: string, quantity: number) => void;
 }
 
@@ -37,11 +38,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const removeFromCart = (productId: string) => {
-    setCartItems(prevItems => {
-      const newItems = prevItems.filter(item => item.id !== productId);
-      return newItems;
-    });
+  const removeFromCart = (productId: string | number) => {
+    setCartItems(prevItems =>
+      prevItems.filter(item => item.id.toString() !== productId.toString())
+    );
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -53,7 +57,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
