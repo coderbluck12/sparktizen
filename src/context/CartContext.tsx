@@ -38,7 +38,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const removeFromCart = (productId: string) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+    setCartItems(prevItems => {
+      const newItems = prevItems.filter(item => item.id !== productId);
+      return newItems;
+    });
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
