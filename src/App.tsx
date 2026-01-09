@@ -8,6 +8,8 @@ import CartPage from './pages/cart';
 import ProductDetailPage from './pages/product/[id]';
 import ProductList from './pages/admin/products';
 import EditProductPage from './pages/admin/products/edit/[id]';
+import MailingListPage from './pages/MailingListPage';
+import CommunityLoginPage from './pages/CommunityLoginPage';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
@@ -22,12 +24,14 @@ function App() {
             <Routes>
               <Route path="/" element={<ProductGallery />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/community-login" element={<CommunityLoginPage />} />
               <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
               <Route path="/admin/products" element={<ProtectedRoute><ProductList /></ProtectedRoute>} />
               <Route path="/admin/products/edit/:id" element={<ProtectedRoute><EditProductPage /></ProtectedRoute>} />
-              <Route path="/store" element={<StorePage />} />
+              <Route path="/store" element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
+              <Route path="/join" element={<MailingListPage />} />
             </Routes>
           </main>
         </div>

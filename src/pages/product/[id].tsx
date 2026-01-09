@@ -92,16 +92,16 @@ const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background text-foreground">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-gray-200 rounded-lg animate-pulse" style={{ paddingBottom: '100%' }}></div>
+            <div className="bg-muted rounded-lg animate-pulse" style={{ paddingBottom: '100%' }}></div>
             <div className="space-y-4">
-              <div className="h-8 bg-gray-200 rounded animate-pulse w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-              <div className="h-10 bg-gray-200 rounded animate-pulse w-32 mt-8"></div>
+              <div className="h-8 bg-muted rounded animate-pulse w-3/4"></div>
+              <div className="h-4 bg-muted rounded animate-pulse w-full"></div>
+              <div className="h-4 bg-muted rounded animate-pulse w-5/6"></div>
+              <div className="h-10 bg-muted rounded animate-pulse w-32 mt-8"></div>
             </div>
           </div>
         </div>
@@ -111,13 +111,13 @@ const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background text-foreground">
         <Header />
         <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 64px)' }}>
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Product not found</h2>
-            <p className="text-gray-600 mb-4">The product you're looking for doesn't exist.</p>
-            <Link to="/" className="text-blue-600 hover:underline">
+            <h2 className="text-2xl font-semibold text-foreground mb-2">Product not found</h2>
+            <p className="text-muted-foreground mb-4">The product you're looking for doesn't exist.</p>
+            <Link to="/" className="text-foreground hover:underline">
               ← Back to store
             </Link>
           </div>
@@ -127,15 +127,15 @@ const ProductDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link to="/store" className="hover:text-gray-900">Store</Link>
+          <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <Link to="/store" className="hover:text-foreground">Store</Link>
             <span>/</span>
-            <span className="text-gray-900">{product.name}</span>
+            <span className="text-foreground">{product.name}</span>
           </nav>
         </div>
       </div>
@@ -145,7 +145,7 @@ const ProductDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Product Image */}
           <div>
-            <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
+            <div className="bg-card rounded-lg overflow-hidden border border-border">
               <div className="relative" style={{ paddingBottom: '100%' }}>
                 <img 
                   src={selectedImage || getProductImage(product)} 
@@ -159,7 +159,7 @@ const ProductDetailPage = () => {
                 {product.imageUrls.map((url, index) => (
                   <div
                     key={index}
-                    className={`rounded-lg overflow-hidden border-2 ${selectedImage === url ? 'border-blue-500' : 'border-transparent'} cursor-pointer hover:border-gray-300 transition-colors`}
+                    className={`rounded-lg overflow-hidden border-2 ${selectedImage === url ? 'border-primary' : 'border-transparent'} cursor-pointer hover:border-input transition-colors`}
                     onClick={() => setSelectedImage(url)}
                   >
                     <div className="relative" style={{ paddingBottom: '100%' }}>
@@ -176,34 +176,34 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Product Info */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6 lg:p-8 h-fit">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-4">{product.name}</h1>
+          <div className="bg-card rounded-lg border border-border p-6 lg:p-8 h-fit">
+            <h1 className="text-3xl font-semibold text-foreground mb-4">{product.name}</h1>
             
             <div className="mb-6">
-              <span className="text-3xl font-bold text-gray-900">₦{product.price.toFixed(2)}</span>
+              <span className="text-3xl font-bold text-foreground">₦{product.price.toFixed(2)}</span>
             </div>
 
-            <div className="border-t border-gray-200 pt-6 mb-6">
-              <h2 className="text-sm font-medium text-gray-900 mb-2">Description</h2>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+            <div className="border-t border-border pt-6 mb-6">
+              <h2 className="text-sm font-medium text-foreground mb-2">Description</h2>
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
             </div>
 
             {/* Quantity Selector */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-900 mb-2">Quantity</label>
+              <label className="block text-sm font-medium text-foreground mb-2">Quantity</label>
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={!product.inStock}
-                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-10 h-10 rounded-lg border border-input flex items-center justify-center hover:bg-secondary text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-lg">−</span>
                 </button>
-                <span className="w-12 text-center font-medium text-gray-900">{quantity}</span>
+                <span className="w-12 text-center font-medium text-foreground">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
                   disabled={!product.inStock}
-                  className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-10 h-10 rounded-lg border border-input flex items-center justify-center hover:bg-secondary text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="text-lg">+</span>
                 </button>
@@ -216,10 +216,10 @@ const ProductDetailPage = () => {
               disabled={!product.inStock}
               className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
                 addedToCart
-                  ? 'bg-green-600 text-white'
+                  ? 'bg-primary text-primary-foreground'
                   : product.inStock
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'bg-gray-400 text-white cursor-not-allowed'
+                  ? 'bg-primary text-primary-foreground hover:opacity-90'
+                  : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
             >
               {addedToCart ? (
@@ -237,16 +237,16 @@ const ProductDetailPage = () => {
             </button>
 
             {/* Product Info */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Product Information</h3>
+            <div className="mt-8 pt-6 border-t border-border">
+              <h3 className="text-sm font-medium text-foreground mb-3">Product Information</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-gray-600">SKU</dt>
-                  <dd className="text-gray-900 font-medium">{product.id.slice(0, 8).toUpperCase()}</dd>
+                  <dt className="text-muted-foreground">SKU</dt>
+                  <dd className="text-foreground font-medium">{product.id.slice(0, 8).toUpperCase()}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-gray-600">Availability</dt>
-                  <dd className={`${product.inStock ? 'text-green-600' : 'text-red-600'} font-medium`}>
+                  <dt className="text-muted-foreground">Availability</dt>
+                  <dd className={`${product.inStock ? 'text-foreground' : 'text-destructive'} font-medium`}>
                     {product.inStock ? 'In Stock' : 'Out of Stock'}
                   </dd>
                 </div>
@@ -259,8 +259,8 @@ const ProductDetailPage = () => {
         {relatedProducts.length > 0 && (
           <div className="mt-16">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">You May Also Like</h2>
-              <Link to="/store" className="text-sm text-blue-600 hover:underline">
+              <h2 className="text-2xl font-semibold text-foreground">You May Also Like</h2>
+              <Link to="/store" className="text-sm text-foreground hover:underline">
                 View all →
               </Link>
             </div>
@@ -272,8 +272,8 @@ const ProductDetailPage = () => {
                   to={`/product/${relatedProduct.id}`}
                   className="group block"
                 >
-                  <div className="bg-white rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-                    <div className="relative bg-gray-50 overflow-hidden" style={{ paddingBottom: '125%' }}>
+                  <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
+                    <div className="relative bg-muted overflow-hidden" style={{ paddingBottom: '125%' }}>
                       <img 
                         src={getProductImage(relatedProduct)} 
                         alt={relatedProduct.name} 
@@ -281,10 +281,10 @@ const ProductDetailPage = () => {
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="text-sm font-medium text-gray-900 mb-1 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-sm font-medium text-foreground mb-1 line-clamp-2 group-hover:text-primary transition-colors">
                         {relatedProduct.name}
                       </h3>
-                      <p className="text-lg font-semibold text-gray-900">
+                      <p className="text-lg font-semibold text-foreground">
                         ₦{relatedProduct.price.toFixed(2)}
                       </p>
                     </div>

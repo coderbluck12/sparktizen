@@ -28,7 +28,7 @@ const StorePage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header Section */}
       <Header />
 
@@ -37,12 +37,12 @@ const StorePage = () => {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white rounded-lg overflow-hidden border border-gray-200 animate-pulse">
-                <div className="bg-gray-200" style={{ paddingBottom: '125%' }}></div>
+              <div key={i} className="bg-card rounded-lg overflow-hidden border border-border animate-pulse">
+                <div className="bg-muted" style={{ paddingBottom: '125%' }}></div>
                 <div className="p-4">
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-3/4 mb-3"></div>
-                  <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-muted rounded mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-3/4 mb-3"></div>
+                  <div className="h-5 bg-muted rounded w-1/2"></div>
                 </div>
               </div>
             ))}
@@ -50,7 +50,7 @@ const StorePage = () => {
         ) : products.length === 0 ? (
           <div className="text-center py-12">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-muted-foreground"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -62,8 +62,8 @@ const StorePage = () => {
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No products</h3>
-            <p className="mt-1 text-sm text-gray-500">Get started by adding a product.</p>
+            <h3 className="mt-2 text-sm font-medium text-foreground">No products</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Get started by adding a product.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">

@@ -1,8 +1,10 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { ThemeContext } from '../context/ThemeContext';
 import { CartContext } from '../context/CartContext';
 
 const Header = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
@@ -23,8 +25,11 @@ const Header = () => {
 
           {/* Navigation */}
           <nav className="flex items-center space-x-6">
+            <button onClick={toggleTheme} className="p-2 rounded-full bg-gray-800 text-white">
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             <Link 
-              to="/" 
+              to="/store" 
               className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
               Shop

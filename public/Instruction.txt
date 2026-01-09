@@ -1,0 +1,3 @@
+Copy the Deep Glow file and paste it in your AE "Plug-ins" folder
+
+- uSer395x

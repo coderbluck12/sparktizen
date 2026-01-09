@@ -3,10 +3,10 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isCommunityMember } = useAuth();
 
-  if (!currentUser) {
-    return <Navigate to="/login" />;
+  if (!currentUser && !isCommunityMember) {
+    return <Navigate to="/community-login" />;
   }
 
   return children;
