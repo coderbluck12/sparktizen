@@ -12,31 +12,34 @@ import MailingListPage from './pages/MailingListPage';
 import CommunityLoginPage from './pages/CommunityLoginPage';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import './App.css';
 
 function App() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Router>
-        <div className="min-h-screen">
-          <main className="pb-4">
-            <Routes>
-              <Route path="/" element={<ProductGallery />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/community-login" element={<CommunityLoginPage />} />
-              <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-              <Route path="/admin/products" element={<ProtectedRoute><ProductList /></ProtectedRoute>} />
-              <Route path="/admin/products/edit/:id" element={<ProtectedRoute><EditProductPage /></ProtectedRoute>} />
-              <Route path="/store" element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/product/:id" element={<ProductDetailPage />} />
-              <Route path="/join" element={<MailingListPage />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    </CartProvider>
+      <CurrencyProvider>
+        <CartProvider>
+          <Router>
+            <div className="min-h-screen">
+              <main className="pb-4">
+                <Routes>
+                  <Route path="/" element={<ProductGallery />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/community-login" element={<CommunityLoginPage />} />
+                  <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
+                  <Route path="/admin/products" element={<ProtectedRoute adminOnly><ProductList /></ProtectedRoute>} />
+                  <Route path="/admin/products/edit/:id" element={<ProtectedRoute adminOnly><EditProductPage /></ProtectedRoute>} />
+                  <Route path="/store" element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/product/:id" element={<ProductDetailPage />} />
+                  <Route path="/join" element={<MailingListPage />} />
+                </Routes>
+              </main>
+            </div>
+          </Router>
+        </CartProvider>
+      </CurrencyProvider>
     </AuthProvider>
   );
 }

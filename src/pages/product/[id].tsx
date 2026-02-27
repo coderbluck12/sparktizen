@@ -5,6 +5,7 @@ import { doc, getDoc, collection, getDocs, query, limit } from 'firebase/firesto
 import type { Product } from '../../types';
 import { CartContext } from '../../context/CartContext';
 import Header from '../../components/Head';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +15,8 @@ const ProductDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  
+  const { formatPrice } = useCurrency();
+
   const cartContext = useContext(CartContext);
 
   if (!cartContext) {
@@ -147,9 +149,9 @@ const ProductDetailPage = () => {
           <div>
             <div className="bg-card rounded-lg overflow-hidden border border-border">
               <div className="relative" style={{ paddingBottom: '100%' }}>
-                <img 
-                  src={selectedImage || getProductImage(product)} 
-                  alt={product.name} 
+                <img
+                  src={selectedImage || getProductImage(product)}
+                  alt={product.name}
                   className="absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300"
                 />
               </div>
@@ -163,10 +165,10 @@ const ProductDetailPage = () => {
                     onClick={() => setSelectedImage(url)}
                   >
                     <div className="relative" style={{ paddingBottom: '100%' }}>
-                      <img 
-                        src={url} 
-                        alt={`${product.name} thumbnail ${index + 1}`} 
-                        className="absolute inset-0 w-full h-full object-cover" 
+                      <img
+                        src={url}
+                        alt={`${product.name} thumbnail ${index + 1}`}
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
                   </div>
@@ -178,9 +180,9 @@ const ProductDetailPage = () => {
           {/* Product Info */}
           <div className="bg-card rounded-lg border border-border p-6 lg:p-8 h-fit">
             <h1 className="text-3xl font-semibold text-foreground mb-4">{product.name}</h1>
-            
+
             <div className="mb-6">
-              <span className="text-3xl font-bold text-foreground">₦{product.price.toFixed(2)}</span>
+              <span className="text-3xl font-bold text-foreground">{formatPrice(product)}</span>
             </div>
 
             <div className="border-t border-border pt-6 mb-6">
@@ -214,13 +216,12 @@ const ProductDetailPage = () => {
             <button
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${
-                addedToCart
+              className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${addedToCart
                   ? 'bg-primary text-primary-foreground'
                   : product.inStock
-                  ? 'bg-primary text-primary-foreground hover:opacity-90'
-                  : 'bg-muted text-muted-foreground cursor-not-allowed'
-              }`}
+                    ? 'bg-primary text-primary-foreground hover:opacity-90'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                }`}
             >
               {addedToCart ? (
                 <span className="flex items-center justify-center">
@@ -264,19 +265,19 @@ const ProductDetailPage = () => {
                 View all →
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {relatedProducts.map((relatedProduct) => (
-                <Link 
-                  key={relatedProduct.id} 
+                <Link
+                  key={relatedProduct.id}
                   to={`/product/${relatedProduct.id}`}
                   className="group block"
                 >
                   <div className="bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300">
                     <div className="relative bg-muted overflow-hidden" style={{ paddingBottom: '125%' }}>
-                      <img 
-                        src={getProductImage(relatedProduct)} 
-                        alt={relatedProduct.name} 
+                      <img
+                        src={getProductImage(relatedProduct)}
+                        alt={relatedProduct.name}
                         className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -285,7 +286,7 @@ const ProductDetailPage = () => {
                         {relatedProduct.name}
                       </h3>
                       <p className="text-lg font-semibold text-foreground">
-                        ₦{relatedProduct.price.toFixed(2)}
+                        {formatPrice(relatedProduct)}
                       </p>
                     </div>
                   </div>

@@ -9,6 +9,7 @@ const EditProductPage = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [priceUSD, setPriceUSD] = useState('');
   const [inStock, setInStock] = useState(true);
   const [loading, setLoading] = useState(false);
   const [existingImages, setExistingImages] = useState<string[]>([]);
@@ -28,8 +29,11 @@ const EditProductPage = () => {
           setName(productData.name);
           setDescription(productData.description);
           setPrice(productData.price.toString());
+          if (productData.priceUSD != null) {
+            setPriceUSD(productData.priceUSD.toString());
+          }
           setInStock(productData.inStock);
-          
+
           // Handle both old imageUrl and new imageUrls
           if (productData.imageUrls && productData.imageUrls.length > 0) {
             setExistingImages(productData.imageUrls);
@@ -101,6 +105,7 @@ const EditProductPage = () => {
         name,
         description,
         price: Number(price),
+        ...(priceUSD ? { priceUSD: Number(priceUSD) } : { priceUSD: null }),
         inStock,
         imageUrls: finalImageUrls,
       });
@@ -162,7 +167,7 @@ const EditProductPage = () => {
 
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-foreground mb-1.5">
-                Price
+                Price (NGN ₦)
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-2 text-muted-foreground text-sm">₦</span>
@@ -179,6 +184,26 @@ const EditProductPage = () => {
               </div>
             </div>
 
+            <div>
+              <label htmlFor="priceUSD" className="block text-sm font-medium text-foreground mb-1.5">
+                Price (USD $) <span className="text-muted-foreground font-normal">— optional</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-muted-foreground text-sm">$</span>
+                <input
+                  type="number"
+                  id="priceUSD"
+                  step="0.01"
+                  value={priceUSD}
+                  onChange={(e) => setPriceUSD(e.target.value)}
+                  placeholder="0.00"
+                  disabled={loading}
+                  className="w-full pl-7 pr-3 py-2 bg-background text-foreground border-2 border-input focus:outline-none focus:border-foreground transition-colors disabled:opacity-50"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Enter the dollar price so shoppers can toggle to USD view.</p>
+            </div>
+
             <div className="flex items-center justify-between">
               <label htmlFor="inStock" className="block text-sm font-medium text-foreground">
                 Availability
@@ -188,7 +213,7 @@ const EditProductPage = () => {
                 onClick={() => setInStock(!inStock)}
                 className={`${inStock ? 'bg-foreground' : 'bg-input'} relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
               >
-                <span className={`${inStock ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform ${inStock ? 'bg-background' : 'bg-muted-foreground'} rounded-full transition-transform`}/>
+                <span className={`${inStock ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform ${inStock ? 'bg-background' : 'bg-muted-foreground'} rounded-full transition-transform`} />
               </button>
             </div>
 
@@ -201,9 +226,9 @@ const EditProductPage = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {existingImages.map((imageUrl, index) => (
                     <div key={index} className="relative group">
-                      <img 
-                        src={imageUrl} 
-                        alt={`Product ${index + 1}`} 
+                      <img
+                        src={imageUrl}
+                        alt={`Product ${index + 1}`}
                         className="w-full h-32 object-cover border-2 border-border"
                       />
                       <button
@@ -231,9 +256,9 @@ const EditProductPage = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {newImages.map((file, index) => (
                     <div key={index} className="relative group">
-                      <img 
-                        src={URL.createObjectURL(file)} 
-                        alt={`New ${index + 1}`} 
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`New ${index + 1}`}
                         className="w-full h-32 object-cover border-2 border-border"
                       />
                       <button

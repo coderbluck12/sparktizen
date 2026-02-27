@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { CartContext } from '../context/CartContext';
+import CurrencyToggle from './CurrencyToggle';
 
 const Header = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -24,33 +25,34 @@ const Header = () => {
           </Link>
 
           {/* Navigation */}
-          <nav className="flex items-center space-x-6">
+          <nav className="flex items-center space-x-4">
+            <CurrencyToggle />
             <button onClick={toggleTheme} className="p-2 rounded-full bg-gray-800 text-white">
               {theme === 'light' ? '🌙' : '☀️'}
             </button>
-            <Link 
-              to="/store" 
+            <Link
+              to="/store"
               className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
             >
               Shop
             </Link>
-            
+
             {/* Cart Icon with Badge */}
-            <Link 
-              to="/cart" 
+            <Link
+              to="/cart"
               className="relative flex items-center text-gray-700 hover:text-gray-900 transition-colors"
             >
-              <svg 
-                className="w-6 h-6" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
               {totalItems > 0 && (

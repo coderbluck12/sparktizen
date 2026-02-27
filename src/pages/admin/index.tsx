@@ -10,6 +10,7 @@ const AdminPage = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [priceUSD, setPriceUSD] = useState('');
   const [images, setImages] = useState<File[]>([]);
   const [inStock, setInStock] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,7 @@ const AdminPage = () => {
         name,
         description,
         price: Number(price),
+        ...(priceUSD ? { priceUSD: Number(priceUSD) } : {}),
         imageUrls,
         inStock,
         createdAt: new Date().toISOString(),
@@ -76,6 +78,7 @@ const AdminPage = () => {
       setName('');
       setDescription('');
       setPrice('');
+      setPriceUSD('');
       setImages([]);
       setInStock(true);
       const fileInput = document.getElementById('image') as HTMLInputElement;
@@ -134,6 +137,7 @@ const AdminPage = () => {
     setName('');
     setDescription('');
     setPrice('');
+    setPriceUSD('');
     setImages([]);
     setInStock(true);
     const fileInput = document.getElementById('image') as HTMLInputElement;
@@ -213,7 +217,7 @@ const AdminPage = () => {
 
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-foreground mb-1.5">
-                Price
+                Price (NGN ₦)
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-2 text-muted-foreground text-sm">₦</span>
@@ -232,6 +236,26 @@ const AdminPage = () => {
             </div>
 
             <div>
+              <label htmlFor="priceUSD" className="block text-sm font-medium text-foreground mb-1.5">
+                Price (USD $) <span className="text-muted-foreground font-normal">— optional</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-2 text-muted-foreground text-sm">$</span>
+                <input
+                  type="number"
+                  id="priceUSD"
+                  step="0.01"
+                  value={priceUSD}
+                  onChange={(e) => setPriceUSD(e.target.value)}
+                  placeholder="0.00"
+                  disabled={loading}
+                  className="w-full pl-7 pr-3 py-2 bg-background text-foreground border-2 border-input focus:outline-none focus:border-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Enter the dollar price so shoppers can toggle to USD view.</p>
+            </div>
+
+            <div>
               <div className="flex items-center justify-between mb-3">
                 <label htmlFor="inStock" className="block text-sm font-medium text-foreground">
                   Availability
@@ -241,7 +265,7 @@ const AdminPage = () => {
                   onClick={() => setInStock(!inStock)}
                   className={`${inStock ? 'bg-foreground' : 'bg-input'} relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none`}
                 >
-                  <span className={`${inStock ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform ${inStock ? 'bg-background' : 'bg-muted-foreground'} rounded-full transition-transform`}/>
+                  <span className={`${inStock ? 'translate-x-6' : 'translate-x-1'} inline-block w-4 h-4 transform ${inStock ? 'bg-background' : 'bg-muted-foreground'} rounded-full transition-transform`} />
                 </button>
               </div>
 

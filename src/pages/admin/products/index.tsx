@@ -8,6 +8,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  priceUSD?: number;
   imageUrl?: string;
   imageUrls?: string[];
 }
@@ -76,8 +77,8 @@ const ProductList = () => {
               <h1 className="text-2xl font-semibold text-foreground">Product Management</h1>
               <p className="text-sm text-muted-foreground mt-1">View, edit, or delete products from your inventory</p>
             </div>
-            <Link 
-              to="/admin" 
+            <Link
+              to="/admin"
               className="px-4 py-2 text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity text-center"
             >
               Add Product
@@ -111,24 +112,27 @@ const ProductList = () => {
                 {products.map(product => (
                   <div key={product.id} className="p-4 hover:bg-muted/50 transition-colors">
                     <div className="flex gap-4">
-                      <img 
-                        src={getProductImage(product)} 
-                        alt={product.name} 
-                        className="h-20 w-20 object-cover border-2 border-border flex-shrink-0" 
+                      <img
+                        src={getProductImage(product)}
+                        alt={product.name}
+                        className="h-20 w-20 object-cover border-2 border-border flex-shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-medium text-foreground mb-1 truncate">{product.name}</h3>
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{product.description}</p>
-                        <p className="text-sm font-semibold text-foreground mb-3">₦{product.price.toFixed(2)}</p>
+                        <p className="text-sm font-semibold text-foreground mb-1">₦{product.price.toFixed(2)}</p>
+                        {product.priceUSD != null && (
+                          <p className="text-xs text-muted-foreground mb-2">${product.priceUSD.toFixed(2)}</p>
+                        )}
                         <div className="flex gap-3">
-                          <Link 
-                            to={`/admin/products/edit/${product.id}`} 
+                          <Link
+                            to={`/admin/products/edit/${product.id}`}
                             className="text-sm text-foreground hover:underline"
                           >
                             Edit
                           </Link>
-                          <button 
-                            onClick={() => handleDelete(product.id)} 
+                          <button
+                            onClick={() => handleDelete(product.id)}
                             className="text-sm text-destructive hover:underline"
                           >
                             Delete
@@ -159,26 +163,31 @@ const ProductList = () => {
                   {products.map(product => (
                     <tr key={product.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <img 
-                          src={getProductImage(product)} 
-                          alt={product.name} 
-                          className="h-12 w-12 object-cover border-2 border-border" 
+                        <img
+                          src={getProductImage(product)}
+                          alt={product.name}
+                          className="h-12 w-12 object-cover border-2 border-border"
                         />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{product.name}</td>
                       <td className="px-6 py-4 text-sm text-muted-foreground max-w-xs">
                         <div className="line-clamp-2">{product.description}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-foreground">₦{product.price.toFixed(2)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-foreground">
+                        <div>₦{product.price.toFixed(2)}</div>
+                        {product.priceUSD != null && (
+                          <div className="text-xs text-muted-foreground">${product.priceUSD.toFixed(2)}</div>
+                        )}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-4">
-                        <Link 
-                          to={`/admin/products/edit/${product.id}`} 
+                        <Link
+                          to={`/admin/products/edit/${product.id}`}
                           className="text-foreground hover:underline transition-colors"
                         >
                           Edit
                         </Link>
-                        <button 
-                          onClick={() => handleDelete(product.id)} 
+                        <button
+                          onClick={() => handleDelete(product.id)}
                           className="text-destructive hover:underline transition-colors"
                         >
                           Delete
