@@ -30,7 +30,7 @@ function App() {
                   <Route path="/admin" element={<ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>} />
                   <Route path="/admin/products" element={<ProtectedRoute adminOnly><ProductList /></ProtectedRoute>} />
                   <Route path="/admin/products/edit/:id" element={<ProtectedRoute adminOnly><EditProductPage /></ProtectedRoute>} />
-                  <Route path="/store" element={<ProtectedRoute><StorePage /></ProtectedRoute>} />
+                  <Route path="/store" element={<StorePage />} />
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/product/:id" element={<ProductDetailPage />} />
                   <Route path="/join" element={<MailingListPage />} />
