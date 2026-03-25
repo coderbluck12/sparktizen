@@ -14,7 +14,7 @@ const HomePage = () => {
         <div className="absolute inset-0">
           {/* Mobile Image */}
           <img
-            src="/mobile.jpg"
+            src="/cover.jpg"
             alt="Hero background"
             className="md:hidden w-full h-full object-cover"
           />
