@@ -20,7 +20,7 @@ const HomePage = () => {
           />
           {/* Desktop Image */}
           <img
-            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80"
+            src="/cover.jpg"
             alt="Hero background"
             className="hidden md:block w-full h-full object-cover"
           />
